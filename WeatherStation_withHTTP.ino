@@ -62,47 +62,48 @@ void setup() {
 
 void loop() {
 
-
+  // checks if there is MPB sensor
   if (bmp.begin(0x76)){
 
-  context = "";
-  temp_sensor = bmp.readTemperature();
-  float temp = temp_sensor;
+    context = "";
+    temp_sensor = bmp.readTemperature();
+    float temp = temp_sensor;
 
-  /* 
-   * preparing string for POST message  
-   * using application/x-www-form-urlencoded
-   * from https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
-  */
-  context = "temperature=22&pressure=0&room=outside";
-  context = "temperature=" + String(temp) + "&pressure=0&room=outside";
-  
-  Serial.println(context);
-  Serial.println("sending HTTP POST");
+    /* 
+     * preparing string for POST message  
+     * using application/x-www-form-urlencoded
+     * from https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST
+    */
+    context = "temperature=22&pressure=0&room=outside";
+    context = "temperature=" + String(temp) + "&pressure=0&room=outside";
 
-  
-  //Check WiFi connection status
-    if(WiFi.status()== WL_CONNECTED){   
-     //Declare object of class HTTPClient
-     HTTPClient http;    
-  
-     //Specify request destination
-     http.begin(endpoint);      
-     //Specify content-type header
-     http.addHeader("Content-Type", "application/x-www-form-urlencoded");     
-  
-     //Send the request
-     int httpCode = http.POST(context);   
-     //Get the response payload
-     String payload = http.getString();                  
-   
-     Serial.println(httpCode);   //Print HTTP return code
-     Serial.println(payload);    //Print request response payload
-  
-     //Close connection
-     http.end();  
+    Serial.println(context);
+    Serial.println("sending HTTP POST");
+
+
+    //Check WiFi connection status
+      if(WiFi.status()== WL_CONNECTED){   
+       //Declare object of class HTTPClient
+       HTTPClient http;    
+
+       //Specify request destination
+       http.begin(endpoint);      
+       //Specify content-type header
+       http.addHeader("Content-Type", "application/x-www-form-urlencoded");     
+
+       //Send the request
+       int httpCode = http.POST(context);   
+       //Get the response payload
+       String payload = http.getString();                  
+
+       Serial.println(httpCode);   //Print HTTP return code
+       Serial.println(payload);    //Print request response payload
+
+       //Close connection
+       http.end();  
+      }
     }
-  }
+  // if no sensor is found, reset. 
   else{
      while (1);
     }
